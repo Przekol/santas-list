@@ -1,7 +1,8 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { GiftInterface } from '../../types/gift';
 
 @Entity()
-export class Gift extends BaseEntity {
+export class Gift extends BaseEntity implements GiftInterface {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
