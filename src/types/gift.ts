@@ -3,3 +3,4 @@ export interface GiftInterface {
   name: string;
   count: number;
 }
+export type GiftsList = { giftsList: GiftInterface[] };
