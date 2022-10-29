@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SingleGift, GiftsList } from '../types/gift';
 import { Gift } from './entities/gift.entity';
+import { GetSuccessInfo } from '../types/successInfo';
 
 @Injectable()
 export class GiftService {
@@ -17,5 +18,19 @@ export class GiftService {
       throw new Error('Gift not found.');
     }
     return { gift };
+  }
+
+  async deleteItem(id: string): Promise<GetSuccessInfo> {
+    const gift = await Gift.findOne({
+      where: { id },
+    });
+    if (!gift) {
+      throw new Error('Gift not found.');
+    }
+    if (!gift) {
+      return { isSuccess: false };
+    }
+    await gift.remove();
+    return { isSuccess: true };
   }
 }
