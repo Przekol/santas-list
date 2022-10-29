@@ -1,7 +1,7 @@
 import { Controller, Delete, Get, Inject, Param } from '@nestjs/common';
 import { SingleGift, GiftsList } from '../types/gift';
 import { GiftService } from './gift.service';
-import { GetSuccessInfo } from '../types/successInfo';
+import { GetSuccessInfo } from '../types/success-info';
 
 @Controller('gift')
 export class GiftController {

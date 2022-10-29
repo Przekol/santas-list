@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SingleGift, GiftsList } from '../types/gift';
 import { Gift } from './entities/gift.entity';
-import { GetSuccessInfo } from '../types/successInfo';
+import { GetSuccessInfo } from '../types/success-info';
 
 @Injectable()
 export class GiftService {
