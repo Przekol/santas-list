@@ -1,5 +1,5 @@
-import { Controller, Get, Inject } from '@nestjs/common';
-import { GiftsList } from '../types/gift';
+import { Controller, Get, Inject, Param } from '@nestjs/common';
+import { SingleGift, GiftsList } from '../types/gift';
 import { GiftService } from './gift.service';
 
 @Controller('gift')
@@ -9,5 +9,10 @@ export class GiftController {
   @Get('/')
   async getGiftsAll(): Promise<GiftsList> {
     return this.giftService.getItems();
+  }
+
+  @Get('/:id')
+  async getGift(@Param('id') id: string): Promise<SingleGift> {
+    return this.giftService.getItem(id);
   }
 }
