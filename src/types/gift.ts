@@ -4,3 +4,4 @@ export interface GiftInterface {
   count: number;
 }
 export type GiftsList = { giftsList: GiftInterface[] };
+export type SingleGift = { gift: GiftInterface };
