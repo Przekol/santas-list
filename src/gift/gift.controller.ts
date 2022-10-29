@@ -1,7 +1,16 @@
-import { Controller, Delete, Get, Inject, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { SingleGift, GiftsList } from '../types/gift';
 import { GiftService } from './gift.service';
 import { GetSuccessInfo } from '../types/success-info';
+import { AddGiftDto } from './dto/add-gift.dto';
 
 @Controller('gift')
 export class GiftController {
@@ -20,5 +29,10 @@ export class GiftController {
   @Delete('/:id')
   async deleteGift(@Param('id') id: string): Promise<GetSuccessInfo> {
     return this.giftService.deleteItem(id);
+  }
+
+  @Post('/')
+  async addGift(@Body() req: AddGiftDto): Promise<SingleGift> {
+    return this.giftService.addItem(req);
   }
 }

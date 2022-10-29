@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SingleGift, GiftsList } from '../types/gift';
 import { Gift } from './entities/gift.entity';
 import { GetSuccessInfo } from '../types/success-info';
+import { AddGiftDto } from './dto/add-gift.dto';
 
 @Injectable()
 export class GiftService {
@@ -32,5 +33,14 @@ export class GiftService {
     }
     await gift.remove();
     return { isSuccess: true };
+  }
+
+  async addItem(req: AddGiftDto): Promise<SingleGift> {
+    const gift = new Gift();
+    gift.name = req.name;
+    gift.count = req.count;
+    await gift.save();
+
+    return { gift };
   }
 }
