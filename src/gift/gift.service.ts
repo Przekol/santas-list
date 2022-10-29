@@ -28,9 +28,6 @@ export class GiftService {
     if (!gift) {
       throw new Error('Gift not found.');
     }
-    if (!gift) {
-      return { isSuccess: false };
-    }
     await gift.remove();
     return { isSuccess: true };
   }
