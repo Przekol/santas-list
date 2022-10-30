@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Child } from './entities/child.entity';
 import { SingleChild } from '../types/child';
+import { AddChildDto } from './dto/add-child.dto';
 
 @Injectable()
 export class ChildService {
@@ -13,6 +14,13 @@ export class ChildService {
     if (!child) {
       throw new Error('Child not found.');
     }
+    return child;
+  }
+
+  async addNewChild(req: AddChildDto): Promise<SingleChild> {
+    const child = new Child();
+    child.name = req.name;
+    await child.save();
     return child;
   }
 }
