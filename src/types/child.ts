@@ -1,8 +1,10 @@
-import { GiftInterface } from './gift';
+import { Gift } from '../gift/entities/gift.entity';
+import { Child } from '../child/entities/child.entity';
 
 export interface ChildInterface {
   id: string;
   name: string;
-  gift: GiftInterface | null;
+  gift: Gift | null;
 }
-export type SingleChild = ChildInterface;
+export type ChildList = ChildInterface[];
+export type SingleChild = Child;

@@ -1,8 +1,7 @@
 import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
 
 import { ChildService } from './child.service';
-import { Child } from './entities/child.entity';
-import { SingleChild } from '../types/child';
+import { ChildList, SingleChild } from '../types/child';
 import { AddChildDto } from './dto/add-child.dto';
 
 @Controller('child')
@@ -10,7 +9,7 @@ export class ChildController {
   constructor(@Inject(ChildService) private childService: ChildService) {}
 
   @Get('/')
-  getAllChild(): Promise<Child[]> {
+  getAllChild(): Promise<ChildList> {
     return this.childService.getAllChild();
   }
 
