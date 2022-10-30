@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Child } from './entities/child.entity';
 import { ChildList, SingleChild } from '../types/child';
 import { AddChildDto } from './dto/add-child.dto';
+import { GiftService } from '../gift/gift.service';
 
 @Injectable()
 export class ChildService {
+  constructor(@Inject(GiftService) private giftService: GiftService) {}
   async getAllChild(): Promise<ChildList> {
     return await Child.find({ relations: ['gift'] });
   }
