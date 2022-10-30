@@ -25,4 +25,26 @@ export class ChildService {
     await child.save();
     return child;
   }
+
+  async addGiftForChild(childId: string, giftId: string): Promise<SingleChild> {
+    const [child] = await Child.find({
+      where: { id: childId },
+      relations: ['gift'],
+    });
+    if (!child) {
+      throw new Error('Child not found.');
+    }
+    // zostawić tak: giftId === '' lub zmienić na !giftId (zmienia się wtedy to co można wpisać w jsona)
+    const gift = giftId === '' ? null : await this.giftService.getItem(giftId);
+    if (gift) {
+      if (gift.count <= (await this.giftService.getCountGivenGifts())) {
+        throw new Error("This gift isn't enough.");
+      }
+    }
+
+    child.gift = gift ?? null;
+    await child.save();
+
+    return child;
+  }
 }

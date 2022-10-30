@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 
 import { ChildService } from './child.service';
 import { ChildList, SingleChild } from '../types/child';
@@ -21,5 +29,13 @@ export class ChildController {
   @Post('/')
   addNewChild(@Body() req: AddChildDto): Promise<SingleChild> {
     return this.childService.addNewChild(req);
+  }
+
+  @Patch('/gift/:childId')
+  addGiftForChild(
+    @Param('childId') childId: string,
+    @Body('giftId') giftId: string,
+  ): Promise<SingleChild> {
+    return this.childService.addGiftForChild(childId, giftId);
   }
 }
