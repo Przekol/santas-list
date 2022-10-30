@@ -39,4 +39,8 @@ export class GiftService {
 
     return gift;
   }
+
+  async getCountGivenGifts() {
+    return 0;
+  }
 }
