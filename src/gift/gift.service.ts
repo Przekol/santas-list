@@ -7,8 +7,7 @@ import { AddGiftDto } from './dto/add-gift.dto';
 @Injectable()
 export class GiftService {
   async getItems(): Promise<GiftsList> {
-    const giftsList = await Gift.find();
-    return { giftsList };
+    return await Gift.find();
   }
 
   async getItem(id: string): Promise<SingleGift> {
@@ -18,7 +17,7 @@ export class GiftService {
     if (!gift) {
       throw new Error('Gift not found.');
     }
-    return { gift };
+    return gift;
   }
 
   async deleteItem(id: string): Promise<GetSuccessInfo> {
@@ -38,6 +37,6 @@ export class GiftService {
     gift.count = req.count;
     await gift.save();
 
-    return { gift };
+    return gift;
   }
 }
