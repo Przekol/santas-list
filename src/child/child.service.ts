@@ -3,6 +3,7 @@ import { Child } from './entities/child.entity';
 import { ChildList, SingleChild } from '../types/child';
 import { AddChildDto } from './dto/add-child.dto';
 import { GiftService } from '../gift/gift.service';
+import { GetSuccessInfo } from '../types/success-info';
 
 @Injectable()
 export class ChildService {
@@ -51,5 +52,14 @@ export class ChildService {
     await child.save();
 
     return child;
+  }
+
+  async deleteChild(id: string): Promise<GetSuccessInfo> {
+    const child = await Child.findOne({ where: { id } });
+    if (!child) {
+      throw new Error('Child not found.');
+    }
+    await child.remove();
+    return { isSuccess: true };
   }
 }
