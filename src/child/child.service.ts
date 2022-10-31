@@ -37,6 +37,10 @@ export class ChildService {
     // zostawić tak: giftId === '' lub zmienić na !giftId (zmienia się wtedy to co można wpisać w jsona)
     const gift = giftId === '' ? null : await this.giftService.getItem(giftId);
     if (gift) {
+      if (child.gift && child.gift.id === giftId) {
+        return child;
+      }
+
       if (gift.count <= (await this.giftService.getCountGivenGifts(giftId))) {
         throw new Error("This gift isn't enough.");
       }
