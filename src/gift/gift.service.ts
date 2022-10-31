@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { SingleGift, GiftsList } from '../types/gift';
 import { Gift } from './entities/gift.entity';
 import { GetSuccessInfo } from '../types/success-info';
 import { AddGiftDto } from './dto/add-gift.dto';
+import { DataSource } from 'typeorm';
+import { Child } from '../child/entities/child.entity';
 
 @Injectable()
 export class GiftService {
+  constructor(@Inject(DataSource) private dataSource: DataSource) {}
   async getItems(): Promise<GiftsList> {
-    const giftsList = await Gift.find();
-    return { giftsList };
+    return await Gift.find();
   }
 
   async getItem(id: string): Promise<SingleGift> {
@@ -18,7 +20,7 @@ export class GiftService {
     if (!gift) {
       throw new Error('Gift not found.');
     }
-    return { gift };
+    return gift;
   }
 
   async deleteItem(id: string): Promise<GetSuccessInfo> {
@@ -38,6 +40,15 @@ export class GiftService {
     gift.count = req.count;
     await gift.save();
 
-    return { gift };
+    return gift;
+  }
+
+  async getCountGivenGifts(id: string): Promise<number> {
+    return await this.dataSource
+      .createQueryBuilder()
+      .select('COUNT(*)', 'count')
+      .from(Child, 'child')
+      .where('child.giftId=:id', { id })
+      .getCount();
   }
 }

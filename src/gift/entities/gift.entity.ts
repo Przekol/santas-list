@@ -1,5 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { GiftInterface } from '../../types/gift';
+import { Child } from '../../child/entities/child.entity';
 
 @Entity()
 export class Gift extends BaseEntity implements GiftInterface {
@@ -11,4 +18,7 @@ export class Gift extends BaseEntity implements GiftInterface {
 
   @Column({ type: 'integer', default: 0 })
   public count: number;
+
+  @OneToMany(() => Child, (child) => child.gift)
+  child: Child[];
 }
