@@ -43,7 +43,7 @@ export class GiftService {
     return gift;
   }
 
-  async getCountGivenGifts(id: string) {
+  async getCountGivenGifts(id: string): Promise<number> {
     return await this.dataSource
       .createQueryBuilder()
       .select('COUNT(*)', 'count')
