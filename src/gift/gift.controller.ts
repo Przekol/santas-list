@@ -17,7 +17,7 @@ export class GiftController {
   constructor(@Inject(GiftService) private giftService: GiftService) {}
 
   @Get('/')
-  async getAllGifts(): Promise<GiftsList> {
+  getAllGifts(): Promise<GiftsList> {
     return this.giftService.getAllGifts();
   }
 
@@ -27,12 +27,12 @@ export class GiftController {
   }
 
   @Delete('/:id')
-  async deleteGift(@Param('id') id: string): Promise<GetSuccessInfo> {
+  deleteGift(@Param('id') id: string): Promise<GetSuccessInfo> {
     return this.giftService.deleteGift(id);
   }
 
   @Post('/')
-  async addNewGift(@Body() req: AddGiftDto): Promise<SingleGift> {
+  addNewGift(@Body() req: AddGiftDto): Promise<SingleGift> {
     return this.giftService.addNewGift(req);
   }
 }
