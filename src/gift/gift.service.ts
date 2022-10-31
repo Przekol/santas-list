@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { SingleGift, GiftsList } from '../types/gift';
+import { SingleGift, GiftsList, GetSingleGiftResponse } from '../types/gift';
 import { Gift } from './entities/gift.entity';
 import { GetSuccessInfo } from '../types/success-info';
 import { AddGiftDto } from './dto/add-gift.dto';
@@ -13,14 +13,15 @@ export class GiftService {
     return await Gift.find();
   }
 
-  async getOneGift(id: string): Promise<SingleGift> {
+  async getOneGift(id: string): Promise<GetSingleGiftResponse> {
     const gift = await Gift.findOne({
       where: { id },
     });
     if (!gift) {
       throw new Error('Gift not found.');
     }
-    return gift;
+    const givenCount = await this.getCountGivenGifts(id);
+    return { gift, givenCount };
   }
 
   async deleteGift(id: string): Promise<GetSuccessInfo> {
@@ -29,6 +30,9 @@ export class GiftService {
     });
     if (!gift) {
       throw new Error('Gift not found.');
+    }
+    if ((await this.getCountGivenGifts(id)) > 0) {
+      throw new Error('Cannot delete given gift');
     }
     await gift.remove();
     return { isSuccess: true };
