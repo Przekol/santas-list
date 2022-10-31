@@ -9,11 +9,11 @@ import { Child } from '../child/entities/child.entity';
 @Injectable()
 export class GiftService {
   constructor(@Inject(DataSource) private dataSource: DataSource) {}
-  async getItems(): Promise<GiftsList> {
+  async getAllGifts(): Promise<GiftsList> {
     return await Gift.find();
   }
 
-  async getItem(id: string): Promise<SingleGift> {
+  async getOneGift(id: string): Promise<SingleGift> {
     const gift = await Gift.findOne({
       where: { id },
     });
@@ -23,7 +23,7 @@ export class GiftService {
     return gift;
   }
 
-  async deleteItem(id: string): Promise<GetSuccessInfo> {
+  async deleteGift(id: string): Promise<GetSuccessInfo> {
     const gift = await Gift.findOne({
       where: { id },
     });
@@ -34,7 +34,7 @@ export class GiftService {
     return { isSuccess: true };
   }
 
-  async addItem(req: AddGiftDto): Promise<SingleGift> {
+  async addNewGift(req: AddGiftDto): Promise<SingleGift> {
     const gift = new Gift();
     gift.name = req.name;
     gift.count = req.count;

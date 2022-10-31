@@ -35,7 +35,8 @@ export class ChildService {
       throw new Error('Child not found.');
     }
     // zostawić tak: giftId === '' lub zmienić na !giftId (zmienia się wtedy to co można wpisać w jsona)
-    const gift = giftId === '' ? null : await this.giftService.getItem(giftId);
+    const gift =
+      giftId === '' ? null : await this.giftService.getOneGift(giftId);
     if (gift) {
       if (child.gift && child.gift.id === giftId) {
         return child;
