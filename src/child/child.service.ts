@@ -13,7 +13,7 @@ export class ChildService {
   }
 
   async getOneChild(id: string): Promise<SingleChild> {
-    const [child] = await Child.find({ where: { id }, relations: ['gift'] });
+    const child = await Child.findOne({ where: { id }, relations: ['gift'] });
     if (!child) {
       throw new Error('Child not found.');
     }
@@ -28,7 +28,7 @@ export class ChildService {
   }
 
   async addGiftForChild(childId: string, giftId: string): Promise<SingleChild> {
-    const [child] = await Child.find({
+    const child = await Child.findOne({
       where: { id: childId },
       relations: ['gift'],
     });
