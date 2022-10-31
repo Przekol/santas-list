@@ -7,3 +7,7 @@ export interface GiftInterface {
 }
 export type GiftsList = GiftInterface[];
 export type SingleGift = Gift;
+export type GetSingleGiftResponse = {
+  gift: Gift;
+  givenCount: number;
+};

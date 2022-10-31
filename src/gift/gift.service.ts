@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { SingleGift, GiftsList } from '../types/gift';
+import { SingleGift, GiftsList, GetSingleGiftResponse } from '../types/gift';
 import { Gift } from './entities/gift.entity';
 import { GetSuccessInfo } from '../types/success-info';
 import { AddGiftDto } from './dto/add-gift.dto';
@@ -9,32 +9,36 @@ import { Child } from '../child/entities/child.entity';
 @Injectable()
 export class GiftService {
   constructor(@Inject(DataSource) private dataSource: DataSource) {}
-  async getItems(): Promise<GiftsList> {
+  async getAllGifts(): Promise<GiftsList> {
     return await Gift.find();
   }
 
-  async getItem(id: string): Promise<SingleGift> {
+  async getOneGift(id: string): Promise<GetSingleGiftResponse> {
     const gift = await Gift.findOne({
       where: { id },
     });
     if (!gift) {
       throw new Error('Gift not found.');
     }
-    return gift;
+    const givenCount = await this.getCountGivenGifts(id);
+    return { gift, givenCount };
   }
 
-  async deleteItem(id: string): Promise<GetSuccessInfo> {
+  async deleteGift(id: string): Promise<GetSuccessInfo> {
     const gift = await Gift.findOne({
       where: { id },
     });
     if (!gift) {
       throw new Error('Gift not found.');
+    }
+    if ((await this.getCountGivenGifts(id)) > 0) {
+      throw new Error('Cannot delete given gift');
     }
     await gift.remove();
     return { isSuccess: true };
   }
 
-  async addItem(req: AddGiftDto): Promise<SingleGift> {
+  async addNewGift(req: AddGiftDto): Promise<SingleGift> {
     const gift = new Gift();
     gift.name = req.name;
     gift.count = req.count;
