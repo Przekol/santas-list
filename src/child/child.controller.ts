@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -11,6 +12,7 @@ import {
 import { ChildService } from './child.service';
 import { ChildList, SingleChild } from '../types/child';
 import { AddChildDto } from './dto/add-child.dto';
+import { GetSuccessInfo } from '../types/success-info';
 
 @Controller('child')
 export class ChildController {
@@ -37,5 +39,10 @@ export class ChildController {
     @Body('giftId') giftId: string,
   ): Promise<SingleChild> {
     return this.childService.addGiftForChild(childId, giftId);
+  }
+
+  @Delete('/:id')
+  deleteChild(@Param('id') id: string): Promise<GetSuccessInfo> {
+    return this.childService.deleteChild(id);
   }
 }
