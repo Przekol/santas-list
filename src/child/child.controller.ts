@@ -13,6 +13,7 @@ import { ChildService } from './child.service';
 import { ChildList, SingleChild } from '../types/child';
 import { AddChildDto } from './dto/add-child.dto';
 import { GetSuccessInfo } from '../types/success-info';
+import { AddGiftForChild } from './dto/add-gift-for-child.dto';
 
 @Controller('child')
 export class ChildController {
@@ -36,9 +37,9 @@ export class ChildController {
   @Patch('/gift/:childId')
   addGiftForChild(
     @Param('childId') childId: string,
-    @Body('giftId') giftId: string,
+    @Body() req: AddGiftForChild,
   ): Promise<SingleChild> {
-    return this.childService.addGiftForChild(childId, giftId);
+    return this.childService.addGiftForChild(childId, req);
   }
 
   @Delete('/:id')

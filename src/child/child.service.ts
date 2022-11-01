@@ -4,6 +4,7 @@ import { ChildList, SingleChild } from '../types/child';
 import { AddChildDto } from './dto/add-child.dto';
 import { GiftService } from '../gift/gift.service';
 import { GetSuccessInfo } from '../types/success-info';
+import { AddGiftForChild } from './dto/add-gift-for-child.dto';
 
 @Injectable()
 export class ChildService {
@@ -27,7 +28,10 @@ export class ChildService {
     return child;
   }
 
-  async addGiftForChild(childId: string, giftId: string): Promise<SingleChild> {
+  async addGiftForChild(
+    childId: string,
+    { giftId }: AddGiftForChild,
+  ): Promise<SingleChild> {
     const child = await Child.findOne({
       where: { id: childId },
       relations: ['gift'],
@@ -36,21 +40,24 @@ export class ChildService {
       throw new Error('Child not found.');
     }
     // zostawić tak: giftId === '' lub zmienić na !giftId (zmienia się wtedy to co można wpisać w jsona)
-    const { gift } =
+
+    const addedGift =
       giftId === '' ? null : await this.giftService.getOneGift(giftId);
-    if (gift) {
+    console.log(addedGift);
+    if (addedGift) {
       if (child.gift && child.gift.id === giftId) {
         return child;
       }
-
-      if (gift.count <= (await this.giftService.getCountGivenGifts(giftId))) {
+      if (
+        addedGift.gift.count <=
+        (await this.giftService.getCountGivenGifts(giftId))
+      ) {
         throw new Error("This gift isn't enough.");
       }
     }
 
-    child.gift = gift ?? null;
+    child.gift = addedGift ? addedGift.gift : null;
     await child.save();
-
     return child;
   }
 
