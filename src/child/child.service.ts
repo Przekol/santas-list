@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { Child } from './entities/child.entity';
 import { ChildList, SingleChild } from '../types/child';
 import { AddChildDto } from './dto/add-child.dto';
@@ -16,7 +16,7 @@ export class ChildService {
   async getOneChild(id: string): Promise<SingleChild> {
     const child = await Child.findOne({ where: { id }, relations: ['gift'] });
     if (!child) {
-      throw new Error('Child not found.');
+      throw new BadRequestException('Child not found.');
     }
     return child;
   }
@@ -37,13 +37,12 @@ export class ChildService {
       relations: ['gift'],
     });
     if (!child) {
-      throw new Error('Child not found.');
+      throw new BadRequestException('Child not found.');
     }
     // zostawić tak: giftId === '' lub zmienić na !giftId (zmienia się wtedy to co można wpisać w jsona)
 
     const addedGift =
       giftId === '' ? null : await this.giftService.getOneGift(giftId);
-    console.log(addedGift);
     if (addedGift) {
       if (child.gift && child.gift.id === giftId) {
         return child;
@@ -52,7 +51,7 @@ export class ChildService {
         addedGift.gift.count <=
         (await this.giftService.getCountGivenGifts(giftId))
       ) {
-        throw new Error("This gift isn't enough.");
+        throw new BadRequestException("This gift isn't enough.");
       }
     }
 
@@ -64,7 +63,7 @@ export class ChildService {
   async deleteChild(id: string): Promise<GetSuccessInfo> {
     const child = await Child.findOne({ where: { id } });
     if (!child) {
-      throw new Error('Child not found.');
+      throw new BadRequestException('Child not found.');
     }
     await child.remove();
     return { isSuccess: true };
