@@ -1,4 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  MethodNotAllowedException,
+} from '@nestjs/common';
 import { SingleGift, GiftsList, GetSingleGiftResponse } from '../types/gift';
 import { Gift } from './entities/gift.entity';
 import { GetSuccessInfo } from '../types/success-info';
@@ -18,7 +23,7 @@ export class GiftService {
       where: { id },
     });
     if (!gift) {
-      throw new Error('Gift not found.');
+      throw new BadRequestException('Gift not found.');
     }
     const givenCount = await this.getCountGivenGifts(id);
     return { gift, givenCount };
@@ -29,10 +34,10 @@ export class GiftService {
       where: { id },
     });
     if (!gift) {
-      throw new Error('Gift not found.');
+      throw new BadRequestException('Gift not found.');
     }
     if ((await this.getCountGivenGifts(id)) > 0) {
-      throw new Error('Cannot delete given gift');
+      throw new MethodNotAllowedException('Cannot delete given gift');
     }
     await gift.remove();
     return { isSuccess: true };
