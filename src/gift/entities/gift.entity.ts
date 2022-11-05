@@ -13,7 +13,7 @@ export class Gift extends BaseEntity implements GiftInterface {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @Column({ length: 50, type: 'varchar' })
+  @Column({ length: 50, type: 'varchar', unique: true })
   public name: string;
 
   @Column({ type: 'integer', default: 0 })
