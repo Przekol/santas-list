@@ -53,15 +53,11 @@ export class GiftService {
   }
 
   async getCountGivenGifts(id: string): Promise<number> {
-    try {
-      return await this.dataSource
-        .createQueryBuilder()
-        .select('COUNT(*)', 'count')
-        .from(Child, 'child')
-        .where('child.giftId=:id', { id })
-        .getCount();
-    } catch (e) {
-      throw new BadRequestException('Gift not found.');
-    }
+    return await this.dataSource
+      .createQueryBuilder()
+      .select('COUNT(*)', 'count')
+      .from(Child, 'child')
+      .where('child.giftId=:id', { id })
+      .getCount();
   }
 }
