@@ -2,8 +2,8 @@ import { IsNumber, IsString, Length, Max, Min } from 'class-validator';
 
 export class AddGiftDto {
   @IsString()
-  @Length(3, 55, {
-    message: 'Gift name must be between 3 and 55 characters.',
+  @Length(3, 50, {
+    message: 'Gift name must be between 3 and 50 characters.',
   })
   name: string;
 
