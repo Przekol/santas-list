@@ -36,12 +36,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     } else if (exception instanceof BadRequestException) {
       const errorResponse = exception.getResponse();
       type ErrorResponse = { statusCode: number; message: string | string[] };
-      const errorMessages = (errorResponse as ErrorResponse).message;
-      if (Array.isArray(errorMessages)) {
-        message = errorMessages[0];
-      } else {
-        message = errorMessages;
-      }
+      message = (errorResponse as ErrorResponse).message;
       statusCode = (errorResponse as ErrorResponse).statusCode;
     } else if (exception instanceof HttpException) {
       statusCode = exception.getStatus();

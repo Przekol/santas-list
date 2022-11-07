@@ -2,10 +2,12 @@ import { Gift } from 'src/gift/entities/gift.entity';
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ChildInterface } from '../../types/child';
 
@@ -16,6 +18,12 @@ export class Child extends BaseEntity implements ChildInterface {
 
   @Column({ length: 25, type: 'varchar' })
   name: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   @ManyToOne(() => Gift, (gift) => gift.child)
   @JoinColumn()
