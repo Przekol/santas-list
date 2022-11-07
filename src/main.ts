@@ -8,8 +8,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('API with Santa Clause List')
-    .setDescription('API developed throughout the API with Santa Clause List')
+    .setTitle("API with Santa's List")
+    .setDescription("API developed throughout the API with Santa's List")
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
