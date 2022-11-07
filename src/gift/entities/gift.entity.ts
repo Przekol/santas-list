@@ -1,6 +1,7 @@
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -18,6 +19,9 @@ export class Gift extends BaseEntity implements GiftInterface {
 
   @Column({ type: 'integer', default: 0 })
   public count: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @OneToMany(() => Child, (child) => child.gift)
   child: Child[];
