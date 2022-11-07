@@ -1,7 +1,13 @@
+import { Gift } from '../gift/entities/gift.entity';
+
 export interface GiftInterface {
   id: string;
   name: string;
   count: number;
 }
-export type GiftsList = { giftsList: GiftInterface[] };
-export type SingleGift = { gift: GiftInterface };
+export type GiftsList = GiftInterface[];
+export type SingleGift = Gift;
+export type GetSingleGiftResponse = {
+  gift: Gift;
+  givenCount: number;
+};

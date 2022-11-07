@@ -7,32 +7,46 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { SingleGift, GiftsList } from '../types/gift';
+import { SingleGift, GiftsList, GetSingleGiftResponse } from '../types/gift';
 import { GiftService } from './gift.service';
 import { GetSuccessInfo } from '../types/success-info';
 import { AddGiftDto } from './dto/add-gift.dto';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Gift } from './entities/gift.entity';
 
+@ApiTags('Gift')
 @Controller('gift')
 export class GiftController {
   constructor(@Inject(GiftService) private giftService: GiftService) {}
 
+  @ApiOkResponse({
+    description: 'Gifts array results from gift table.',
+  })
   @Get('/')
-  async getGiftsAll(): Promise<GiftsList> {
-    return this.giftService.getItems();
+  getAllGifts(): Promise<GiftsList> {
+    return this.giftService.getAllGifts();
   }
 
+  @ApiOkResponse({ description: 'One gift result' })
   @Get('/:id')
-  async getGift(@Param('id') id: string): Promise<SingleGift> {
-    return this.giftService.getItem(id);
+  getOneGift(@Param('id') id: string): Promise<GetSingleGiftResponse> {
+    return this.giftService.getOneGift(id);
   }
 
+  @ApiOkResponse({
+    description: 'The gift deleted.',
+  })
   @Delete('/:id')
-  async deleteGift(@Param('id') id: string): Promise<GetSuccessInfo> {
-    return this.giftService.deleteItem(id);
+  deleteGift(@Param('id') id: string): Promise<GetSuccessInfo> {
+    return this.giftService.deleteGift(id);
   }
 
+  @ApiCreatedResponse({
+    description: 'The child has been successfully created.',
+    type: Gift,
+  })
   @Post('/')
-  async addGift(@Body() req: AddGiftDto): Promise<SingleGift> {
-    return this.giftService.addItem(req);
+  addNewGift(@Body() req: AddGiftDto): Promise<SingleGift> {
+    return this.giftService.addNewGift(req);
   }
 }
