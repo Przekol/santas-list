@@ -5,6 +5,7 @@ import { AddChildDto } from './dto/add-child.dto';
 import { GiftService } from '../gift/gift.service';
 import { GetSuccessInfo } from '../types/success-info';
 import { AddGiftForChild } from './dto/add-gift-for-child.dto';
+import { ErrorMessage } from '../utils/messages/errors';
 
 @Injectable()
 export class ChildService {
@@ -16,7 +17,7 @@ export class ChildService {
   async getOneChild(id: string): Promise<SingleChild> {
     const child = await Child.findOne({ where: { id }, relations: ['gift'] });
     if (!child) {
-      throw new BadRequestException('Child not found.');
+      throw new BadRequestException(ErrorMessage.CHILD_IS_NOT_FOUND);
     }
     return child;
   }
@@ -37,9 +38,8 @@ export class ChildService {
       relations: ['gift'],
     });
     if (!child) {
-      throw new BadRequestException('Child not found.');
+      throw new BadRequestException(ErrorMessage.CHILD_IS_NOT_FOUND);
     }
-    // zostawić tak: giftId === '' lub zmienić na !giftId (zmienia się wtedy to co można wpisać w jsona)
 
     const addedGift =
       giftId === '' ? null : await this.giftService.getOneGift(giftId);
@@ -51,7 +51,7 @@ export class ChildService {
         addedGift.gift.count <=
         (await this.giftService.getCountGivenGifts(giftId))
       ) {
-        throw new BadRequestException("This gift isn't enough.");
+        throw new BadRequestException(ErrorMessage.GIFT_IS_NOT_ENOUGH);
       }
     }
 
@@ -63,7 +63,7 @@ export class ChildService {
   async deleteChild(id: string): Promise<GetSuccessInfo> {
     const child = await Child.findOne({ where: { id } });
     if (!child) {
-      throw new BadRequestException('Child not found.');
+      throw new BadRequestException(ErrorMessage.CHILD_IS_NOT_FOUND);
     }
     await child.remove();
     return { isSuccess: true };
