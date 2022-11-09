@@ -11,7 +11,6 @@ import {
 import { Child } from '../../child/entities/child.entity';
 import { GetListOfGiftsRes, GetOneGiftRes, GiftEntity } from '../../types/gift';
 import { AddGiftDto } from '../dto/add-gift.dto';
-import { GetSuccessInfo } from '../../types/success-info';
 
 @Entity()
 export class Gift extends BaseEntity implements GiftEntity {
@@ -36,9 +35,8 @@ export class Gift extends BaseEntity implements GiftEntity {
     return await this.save();
   }
 
-  async delete(): Promise<GetSuccessInfo> {
+  async delete(): Promise<void> {
     await this.remove();
-    return { isSuccess: true };
   }
 
   static async getAll(): Promise<GetListOfGiftsRes> {

@@ -5,7 +5,6 @@ import {
   GetSingleGiftResponse,
 } from '../types/gift';
 import { Gift } from './entities/gift.entity';
-import { GetSuccessInfo } from '../types/success-info';
 import { AddGiftDto } from './dto/add-gift.dto';
 import { DataSource } from 'typeorm';
 import { Child } from '../child/entities/child.entity';
@@ -24,7 +23,7 @@ export class GiftService {
     return { gift, givenCount };
   }
 
-  async deleteGift(id: string): Promise<GetSuccessInfo> {
+  async deleteGift(id: string): Promise<void> {
     const gift = await Gift.getOne(id);
 
     if ((await this.getCountGivenGifts(id)) > 0) {
