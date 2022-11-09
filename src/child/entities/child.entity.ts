@@ -15,7 +15,6 @@ import {
   GetListOfChildrenRes,
   GetOneChildRes,
 } from '../../types/child';
-import { GetSuccessInfo } from '../../types/success-info';
 import { BadRequestException } from '@nestjs/common';
 import { ErrorMessage } from '../../utils/messages/errors';
 
@@ -42,9 +41,8 @@ export class Child extends BaseEntity implements ChildEntity {
     return await this.save();
   }
 
-  async delete(): Promise<GetSuccessInfo> {
+  async delete(): Promise<void> {
     await this.remove();
-    return { isSuccess: true };
   }
 
   static async getAll(): Promise<GetListOfChildrenRes> {

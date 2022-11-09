@@ -2,8 +2,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { Child } from './entities/child.entity';
 import { AddChildDto } from './dto/add-child.dto';
 import { GiftService } from '../gift/gift.service';
-import { GetSuccessInfo } from '../types/success-info';
-import { AddGiftForChild } from './dto/add-gift-for-child.dto';
+import { AddGiftForChildDto } from './dto/add-gift-for-child.dto';
 import { ErrorMessage } from '../utils/messages/errors';
 import { GetListOfChildrenRes, GetOneChildRes } from '../types/child';
 
@@ -26,14 +25,14 @@ export class ChildService {
 
   async addGiftForChild(
     childId: string,
-    { giftId }: AddGiftForChild,
+    { giftId }: AddGiftForChildDto,
   ): Promise<GetOneChildRes> {
     const child = await this.getOneChild(childId);
 
     return await this.setChildGift(giftId, child);
   }
 
-  async deleteChild(id: string): Promise<GetSuccessInfo> {
+  async deleteChild(id: string): Promise<void> {
     const child = await this.getOneChild(id);
     return await child.delete();
   }
