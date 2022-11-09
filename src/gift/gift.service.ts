@@ -23,7 +23,7 @@ export class GiftService {
   }
 
   async getOneGift(id: string): Promise<GetSingleGiftResponse> {
-    const gift = await Gift.findOne({ where: { id: id } });
+    const gift = await Gift.findOne({ where: { id } });
     if (!gift) {
       throw new BadRequestException(ErrorMessage.GIFT_IS_NOT_FOUND);
     }
@@ -37,7 +37,9 @@ export class GiftService {
     if ((await this.getCountGivenGifts(id)) > 0) {
       throw new MethodNotAllowedException(ErrorMessage.CANNOT_DELETE_GIFT);
     }
-    await gift.remove();
+    if (gift instanceof Gift) {
+      await gift.remove();
+    }
   }
 
   async addNewGift(dto: AddGiftDto): Promise<GetOneGiftRes> {

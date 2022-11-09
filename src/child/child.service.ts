@@ -5,6 +5,7 @@ import { GiftService } from '../gift/gift.service';
 import { AddGiftForChildDto } from './dto/add-gift-for-child.dto';
 import { ErrorMessage } from '../utils/messages/errors';
 import { GetListOfChildrenRes, GetOneChildRes } from '../types/child';
+import { Gift } from '../gift/entities/gift.entity';
 
 @Injectable()
 export class ChildService {
@@ -16,7 +17,7 @@ export class ChildService {
 
   async getOneChild(id: string): Promise<GetOneChildRes> {
     const child = await Child.findOne({
-      where: { id: id },
+      where: { id },
       relations: ['gift'],
     });
     if (!child) {
@@ -35,13 +36,16 @@ export class ChildService {
     { giftId }: AddGiftForChildDto,
   ): Promise<GetOneChildRes> {
     const child = await this.getOneChild(childId);
-
-    return await this.setChildGift(giftId, child);
+    if (child instanceof Child) {
+      return await this.setChildGift(giftId, child);
+    }
   }
 
   async deleteChild(id: string): Promise<void> {
     const child = await this.getOneChild(id);
-    await child.remove();
+    if (child instanceof Child) {
+      await child.remove();
+    }
   }
 
   private async setChildGift(giftId: string, child: Child) {
@@ -51,15 +55,13 @@ export class ChildService {
       if (child.gift && child.gift.id === giftId) {
         return child;
       }
-      if (
-        addedGift.gift.count <=
-        (await this.giftService.getCountGivenGifts(giftId))
-      ) {
+      const { gift, givenCount } = addedGift;
+      if (gift.count <= givenCount) {
         throw new BadRequestException(ErrorMessage.GIFT_IS_NOT_ENOUGH);
       }
     }
 
-    child.gift = addedGift ? addedGift.gift : null;
+    child.gift = addedGift ? (addedGift.gift as Gift) : null;
     await child.save();
     return child;
   }
