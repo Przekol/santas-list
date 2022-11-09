@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  MethodNotAllowedException,
-} from '@nestjs/common';
+import { Inject, Injectable, MethodNotAllowedException } from '@nestjs/common';
 import {
   GetListOfGiftsRes,
   GetOneGiftRes,
