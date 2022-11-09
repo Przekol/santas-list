@@ -1,18 +1,13 @@
 import { IsNumber, IsString, Length, Max, Min } from 'class-validator';
+import { AddGiftReq } from '../../types/gift';
 
-export class AddGiftDto {
+export class AddGiftDto implements AddGiftReq {
   @IsString()
-  @Length(3, 50, {
-    message: 'Gift name must be between 3 and 50 characters.',
-  })
+  @Length(3, 50)
   name: string;
 
   @IsNumber()
-  @Min(1, {
-    message: 'The quantity of the gift should be between 1 and 999,999.',
-  })
-  @Max(999999, {
-    message: 'The quantity of the gift should be between 1 and 999,999.',
-  })
+  @Min(1)
+  @Max(999999)
   count: number;
 }
