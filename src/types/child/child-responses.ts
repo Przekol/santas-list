@@ -1,5 +1,4 @@
 import { Gift } from '../../gift/entities/gift.entity';
-import { Child } from '../../child/entities/child.entity';
 
 export interface ChildEntity {
   id: string;
@@ -8,5 +7,6 @@ export interface ChildEntity {
   createdAt: Date;
   updatedAt: Date;
 }
-export type GetOneChildRes = Child;
-export type GetListOfChildrenRes = Child[];
+
+export type GetOneChildRes = ChildEntity;
+export type GetListOfChildrenRes = ChildEntity[];

@@ -1,4 +1,3 @@
-import { Gift } from '../../gift/entities/gift.entity';
 import { Child } from '../../child/entities/child.entity';
 
 export interface GiftEntity {
@@ -8,9 +7,9 @@ export interface GiftEntity {
   child: Child[];
   createdAt: Date;
 }
-export type GetOneGiftRes = Gift;
-export type GetListOfGiftsRes = Gift[];
+export type GetOneGiftRes = GiftEntity;
+export type GetListOfGiftsRes = GiftEntity[];
 export type GetSingleGiftResponse = {
-  gift: Gift;
+  gift: GiftEntity;
   givenCount: number;
 };

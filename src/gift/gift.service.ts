@@ -1,4 +1,9 @@
-import { Inject, Injectable, MethodNotAllowedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  MethodNotAllowedException,
+} from '@nestjs/common';
 import {
   GetListOfGiftsRes,
   GetOneGiftRes,
@@ -14,22 +19,27 @@ import { ErrorMessage } from '../utils/messages/errors';
 export class GiftService {
   constructor(@Inject(DataSource) private readonly dataSource: DataSource) {}
   async getAllGifts(): Promise<GetListOfGiftsRes> {
-    return await Gift.getAll();
+    return await Gift.find();
   }
 
   async getOneGift(id: string): Promise<GetSingleGiftResponse> {
-    const gift = await Gift.getOne(id);
+    const gift = await Gift.findOne({ where: { id } });
+    if (!gift) {
+      throw new BadRequestException(ErrorMessage.GIFT_IS_NOT_FOUND);
+    }
     const givenCount = await this.getCountGivenGifts(id);
     return { gift, givenCount };
   }
 
   async deleteGift(id: string): Promise<void> {
-    const gift = await Gift.getOne(id);
+    const { gift } = await this.getOneGift(id);
 
     if ((await this.getCountGivenGifts(id)) > 0) {
       throw new MethodNotAllowedException(ErrorMessage.CANNOT_DELETE_GIFT);
     }
-    return await gift.delete();
+    if (gift instanceof Gift) {
+      await gift.remove();
+    }
   }
 
   async addNewGift(dto: AddGiftDto): Promise<GetOneGiftRes> {
