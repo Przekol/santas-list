@@ -7,23 +7,27 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { SingleGift, GiftsList, GetSingleGiftResponse } from '../types/gift';
 import { GiftService } from './gift.service';
 import { GetSuccessInfo } from '../types/success-info';
 import { AddGiftDto } from './dto/add-gift.dto';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Gift } from './entities/gift.entity';
+import {
+  GetListOfGiftsRes,
+  GetOneGiftRes,
+  GetSingleGiftResponse,
+} from '../types/gift';
 
 @ApiTags('Gift')
 @Controller('gift')
 export class GiftController {
-  constructor(@Inject(GiftService) private giftService: GiftService) {}
+  constructor(@Inject(GiftService) private readonly giftService: GiftService) {}
 
   @ApiOkResponse({
     description: 'Gifts array results from gift table.',
   })
   @Get('/')
-  getAllGifts(): Promise<GiftsList> {
+  getAllGifts(): Promise<GetListOfGiftsRes> {
     return this.giftService.getAllGifts();
   }
 
@@ -46,7 +50,7 @@ export class GiftController {
     type: Gift,
   })
   @Post('/')
-  addNewGift(@Body() req: AddGiftDto): Promise<SingleGift> {
+  addNewGift(@Body() req: AddGiftDto): Promise<GetOneGiftRes> {
     return this.giftService.addNewGift(req);
   }
 }

@@ -9,10 +9,18 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ChildInterface } from '../../types/child';
+import { AddChildDto } from '../dto/add-child.dto';
+import {
+  ChildEntity,
+  GetListOfChildrenRes,
+  GetOneChildRes,
+} from '../../types/child';
+import { GetSuccessInfo } from '../../types/success-info';
+import { BadRequestException } from '@nestjs/common';
+import { ErrorMessage } from '../../utils/messages/errors';
 
 @Entity()
-export class Child extends BaseEntity implements ChildInterface {
+export class Child extends BaseEntity implements ChildEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -28,4 +36,29 @@ export class Child extends BaseEntity implements ChildInterface {
   @ManyToOne(() => Gift, (gift) => gift.child)
   @JoinColumn()
   gift: Gift;
+
+  async create(dto: AddChildDto): Promise<GetOneChildRes> {
+    this.name = dto.name;
+    return await this.save();
+  }
+
+  async delete(): Promise<GetSuccessInfo> {
+    await this.remove();
+    return { isSuccess: true };
+  }
+
+  static async getAll(): Promise<GetListOfChildrenRes> {
+    return await Child.find({ relations: ['gift'] });
+  }
+
+  static async getOne(id: string): Promise<GetOneChildRes> {
+    const child = await Child.findOne({
+      where: { id: id },
+      relations: ['gift'],
+    });
+    if (!child) {
+      throw new BadRequestException(ErrorMessage.CHILD_IS_NOT_FOUND);
+    }
+    return child;
+  }
 }
