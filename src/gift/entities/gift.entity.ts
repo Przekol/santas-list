@@ -1,3 +1,5 @@
+import { BadRequestException } from '@nestjs/common';
+import { ErrorMessage } from 'src/utils/messages/errors';
 import {
   BaseEntity,
   Column,
@@ -6,23 +8,46 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { GiftInterface } from '../../types/gift';
 import { Child } from '../../child/entities/child.entity';
+import { GetListOfGiftsRes, GetOneGiftRes, GiftEntity } from '../../types/gift';
+import { AddGiftDto } from '../dto/add-gift.dto';
 
 @Entity()
-export class Gift extends BaseEntity implements GiftInterface {
+export class Gift extends BaseEntity implements GiftEntity {
   @PrimaryGeneratedColumn('uuid')
-  public id: string;
+  id: string;
 
   @Column({ length: 50, type: 'varchar', unique: true })
-  public name: string;
+  name: string;
 
   @Column({ type: 'integer', default: 0 })
-  public count: number;
+  count: number;
 
   @CreateDateColumn()
   createdAt: Date;
 
   @OneToMany(() => Child, (child) => child.gift)
   child: Child[];
+
+  async create(dto: AddGiftDto): Promise<GetOneGiftRes> {
+    this.name = dto.name;
+    this.count = dto.count;
+    return await this.save();
+  }
+
+  async delete(): Promise<void> {
+    await this.remove();
+  }
+
+  static async getAll(): Promise<GetListOfGiftsRes> {
+    return await Gift.find();
+  }
+
+  static async getOne(id: string): Promise<GetOneGiftRes> {
+    const gift = await Gift.findOne({ where: { id: id } });
+    if (!gift) {
+      throw new BadRequestException(ErrorMessage.GIFT_IS_NOT_FOUND);
+    }
+    return gift;
+  }
 }

@@ -1,46 +1,43 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { Child } from './entities/child.entity';
-import { ChildList, SingleChild } from '../types/child';
 import { AddChildDto } from './dto/add-child.dto';
 import { GiftService } from '../gift/gift.service';
-import { GetSuccessInfo } from '../types/success-info';
-import { AddGiftForChild } from './dto/add-gift-for-child.dto';
+import { AddGiftForChildDto } from './dto/add-gift-for-child.dto';
 import { ErrorMessage } from '../utils/messages/errors';
+import { GetListOfChildrenRes, GetOneChildRes } from '../types/child';
 
 @Injectable()
 export class ChildService {
-  constructor(@Inject(GiftService) private giftService: GiftService) {}
-  async getAllChild(): Promise<ChildList> {
-    return await Child.find({ relations: ['gift'] });
+  constructor(@Inject(GiftService) private readonly giftService: GiftService) {}
+
+  async getAllChild(): Promise<GetListOfChildrenRes> {
+    return await Child.getAll();
   }
 
-  async getOneChild(id: string): Promise<SingleChild> {
-    const child = await Child.findOne({ where: { id }, relations: ['gift'] });
-    if (!child) {
-      throw new BadRequestException(ErrorMessage.CHILD_IS_NOT_FOUND);
-    }
-    return child;
+  async getOneChild(id: string): Promise<GetOneChildRes> {
+    return await Child.getOne(id);
   }
 
-  async addNewChild(req: AddChildDto): Promise<SingleChild> {
+  async addNewChild(dto: AddChildDto): Promise<GetOneChildRes> {
     const child = new Child();
-    child.name = req.name;
-    await child.save();
-    return child;
+    return await child.create(dto);
   }
 
   async addGiftForChild(
     childId: string,
-    { giftId }: AddGiftForChild,
-  ): Promise<SingleChild> {
-    const child = await Child.findOne({
-      where: { id: childId },
-      relations: ['gift'],
-    });
-    if (!child) {
-      throw new BadRequestException(ErrorMessage.CHILD_IS_NOT_FOUND);
-    }
+    { giftId }: AddGiftForChildDto,
+  ): Promise<GetOneChildRes> {
+    const child = await this.getOneChild(childId);
 
+    return await this.setChildGift(giftId, child);
+  }
+
+  async deleteChild(id: string): Promise<void> {
+    const child = await this.getOneChild(id);
+    return await child.delete();
+  }
+
+  private async setChildGift(giftId: string, child: Child) {
     const addedGift =
       giftId === '' ? null : await this.giftService.getOneGift(giftId);
     if (addedGift) {
@@ -58,14 +55,5 @@ export class ChildService {
     child.gift = addedGift ? addedGift.gift : null;
     await child.save();
     return child;
-  }
-
-  async deleteChild(id: string): Promise<GetSuccessInfo> {
-    const child = await Child.findOne({ where: { id } });
-    if (!child) {
-      throw new BadRequestException(ErrorMessage.CHILD_IS_NOT_FOUND);
-    }
-    await child.remove();
-    return { isSuccess: true };
   }
 }
