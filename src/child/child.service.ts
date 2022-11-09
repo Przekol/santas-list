@@ -11,11 +11,18 @@ export class ChildService {
   constructor(@Inject(GiftService) private readonly giftService: GiftService) {}
 
   async getAllChild(): Promise<GetListOfChildrenRes> {
-    return await Child.getAll();
+    return await Child.find({ relations: ['gift'] });
   }
 
   async getOneChild(id: string): Promise<GetOneChildRes> {
-    return await Child.getOne(id);
+    const child = await Child.findOne({
+      where: { id: id },
+      relations: ['gift'],
+    });
+    if (!child) {
+      throw new BadRequestException(ErrorMessage.CHILD_IS_NOT_FOUND);
+    }
+    return child;
   }
 
   async addNewChild(dto: AddChildDto): Promise<GetOneChildRes> {
@@ -34,7 +41,7 @@ export class ChildService {
 
   async deleteChild(id: string): Promise<void> {
     const child = await this.getOneChild(id);
-    return await child.delete();
+    await child.remove();
   }
 
   private async setChildGift(giftId: string, child: Child) {
