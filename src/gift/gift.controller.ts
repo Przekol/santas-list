@@ -18,6 +18,7 @@ import {
   ApiMethodNotAllowedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { Gift } from './entities/gift.entity';
@@ -26,7 +27,7 @@ import {
   GetOneGiftRes,
   GetSingleGiftResponse,
 } from '../types/gift';
-import { ApiMessage } from '../utils/messages/api';
+import { ApiExamples, ApiMessage } from '../utils/messages/api';
 
 @ApiTags('Gift')
 @ApiInternalServerErrorResponse({
@@ -47,6 +48,12 @@ export class GiftController {
 
   @ApiOkResponse({ description: ApiMessage.THE_ONE_RESUL })
   @ApiBadRequestResponse({ description: ApiMessage.THE_RECORD_NOT_FOUND })
+  @ApiParam({
+    name: 'id',
+    format: 'uuid',
+    description: ApiMessage.THE_RECORD_ID,
+    examples: ApiExamples.oneGift,
+  })
   @Get('/:id')
   getOneGift(@Param('id') id: string): Promise<GetSingleGiftResponse> {
     return this.giftService.getOneGift(id);
@@ -59,6 +66,12 @@ export class GiftController {
   @ApiMethodNotAllowedResponse({
     description: ApiMessage.CANNOT_DELETE_GIVEN_RECORD,
   })
+  @ApiParam({
+    name: 'id',
+    format: 'uuid',
+    description: ApiMessage.THE_RECORD_ID,
+    examples: ApiExamples.oneGift,
+  })
   @HttpCode(204)
   @Delete('/:id')
   deleteGift(@Param('id') id: string): Promise<void> {
@@ -66,11 +79,11 @@ export class GiftController {
   }
 
   @ApiCreatedResponse({
-    description: ApiMessage.THE_RECORD_BEEN_SUCCESSFULLY_CREATED,
+    description: ApiMessage.THE_RECORD_HAS_BEEN_SUCCESSFULLY_CREATED,
     type: Gift,
   })
-  @ApiBody({ type: AddGiftDto })
   @ApiBadRequestResponse({ description: ApiMessage.INVALID_INPUT })
+  @ApiBody({ type: AddGiftDto, examples: ApiExamples.addNewGift })
   @Post('/')
   addNewGift(@Body() req: AddGiftDto): Promise<GetOneGiftRes> {
     return this.giftService.addNewGift(req);
