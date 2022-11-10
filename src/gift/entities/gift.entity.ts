@@ -1,5 +1,3 @@
-import { BadRequestException } from '@nestjs/common';
-import { ErrorMessage } from 'src/utils/messages/errors';
 import {
   BaseEntity,
   Column,
@@ -9,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Child } from '../../child/entities/child.entity';
-import { GetListOfGiftsRes, GetOneGiftRes, GiftEntity } from '../../types/gift';
+import { GetOneGiftRes, GiftEntity } from '../../types/gift';
 import { AddGiftDto } from '../dto/add-gift.dto';
 
 @Entity()
@@ -33,21 +31,5 @@ export class Gift extends BaseEntity implements GiftEntity {
     this.name = dto.name;
     this.count = dto.count;
     return await this.save();
-  }
-
-  async delete(): Promise<void> {
-    await this.remove();
-  }
-
-  static async getAll(): Promise<GetListOfGiftsRes> {
-    return await Gift.find();
-  }
-
-  static async getOne(id: string): Promise<GetOneGiftRes> {
-    const gift = await Gift.findOne({ where: { id: id } });
-    if (!gift) {
-      throw new BadRequestException(ErrorMessage.GIFT_IS_NOT_FOUND);
-    }
-    return gift;
   }
 }
